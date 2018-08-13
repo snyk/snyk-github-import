@@ -30,7 +30,7 @@ snyk-github-import --help
 To import all repos modified in the last day (since the beginning of the day, yesterday) you can run the following command:
 
 ```bash
-snyk-github-import --orgId=<orgId> --integrationId=<integrationId> --githubToken=<githubToken> --githubUrl=<baseUrl> --days=1
+snyk-github-import --orgId=<orgId> --integrationId=<integrationId> --githubToken=<githubToken> --githubUrl=<baseUrl>
 ```
 
 If you wish to expand the number of days, you can specify with the `days` argument:
