@@ -1,0 +1,28 @@
+{
+  "name": "@snyk/github-import",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "bin": {
+    "snyk-github-import": "./cli/index.js"
+  },
+  "engines": {
+    "node": ">=8"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@octokit/rest": "^15.9.5",
+    "chalk": "^2.4.1",
+    "enquirer": "^1.0.3",
+    "minimist": "^1.2.0",
+    "moment": "^2.22.2",
+    "prompt-confirm": "^1.2.0",
+    "request": "^2.87.0",
+    "request-promise-native": "^1.0.5",
+    "uuid-validate": "0.0.2"
+  }
+}
