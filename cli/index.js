@@ -1,24 +1,26 @@
 #!/usr/bin/env node
 
-const Enquirer = require('enquirer');
 const args = require('minimist')(process.argv.slice(2));
 const uuidValidate = require('uuid-validate');
-const request = require('request-promise-native');
 const chalk = require('chalk');
+const githubImport = require('../lib');
 const moment = require('moment');
-const Octokit = require('@octokit/rest');
 
 const defaults = {
   apiBase: 'https://snyk.io/api/v1',
   githubUrl: 'https://api.github.com',
   days: 1,
-}
+};
 
-const help = 'Usage: snyk-github-import --orgId=<orgId> --integrationId=<integrationId> --githubToken=<githubToken> \n' +
-  'Optional arguments: \n' +
-  `--githubUrl (e.g. "${defaults.githubUrl}")` +
-  `--days (e.g. ${defaults.days})` +
-  `--since (ISO 8601 format date)`;
+const help = `
+Usage: snyk-github-import --orgId=<orgId> --integrationId=<integrationId> --githubToken=<githubToken>
+
+Optional arguments:
+  --githubOrg (a specific org to import from)
+  --githubUrl (e.g. "${defaults.githubUrl}")
+  --days (e.g. ${defaults.days})
+  --since (ISO 8601 format date)
+`;
 
 if (args.help || args.h) {
   console.log(help);
@@ -44,86 +46,36 @@ const invalidArgs = Object.keys(validators).filter(key =>
 if (invalidArgs.length > 0) {
   console.log(chalk.red(`Invalid args passed: ${invalidArgs.join(', ')}`));
   console.log(help);
-  return process.exit(1);
+  process.exit(1);
 }
 
-const github = Octokit({ baseUrl: githubUrl });
-
-github.authenticate({
-  type: 'token',
-  token: args.githubToken,
-})
-
-const enquirer = new Enquirer();
-enquirer.register('confirm', require('prompt-confirm'));
-
-async function getRepos (since) {
-  let response = await github.repos.getAll({
-    per_page: 100,
-    sort: 'updated',
-  });
-  let {data} = response;
-
-  while (github.hasNextPage(response) && since.isBefore(data[data.length - 1].updated_at)) {
-    response = await github.getNextPage(response);
-    data = data.concat(response.data)
-  }
-
-  const repos = data.filter(repo => since.isBefore(repo.updated_at));
-
-  return repos;
-}
-
-async function importRepos () {
+async function init() {
   let since;
   if (args.since) {
     since = moment(args.since);
   } else {
-    since = moment().subtract(days, 'days').startOf('day');
+    since = moment().subtract(args.days, 'days').startOf('day');
   }
 
   console.log(chalk.grey(`Importing repos modified since ${since.format()}`));
-  let repos;
-  try {
-    repos = await getRepos(since);
-  } catch (err) {
-    console.log(chalk.red(err));
-    return process.exit(1);
-  }
 
-  if (repos.length === 0) {
+  const repos = await githubImport.getRepos(githubUrl, args.githubToken, since, args.githubOrg);
+
+  if (!repos) {
     console.log(chalk.green('No repos to import'));
-    return process.exit(0);
+    process.exit(0);
   }
 
   console.log(chalk.grey(`Found ${repos.length} repo${repos.length > 1 ? 's' : ''} to import`));
 
-  const results = await Promise.all(repos.map(async repo => {
-    const target = {
-      owner: repo.owner.login,
-      name: repo.name,
-      branch: repo.default_branch,
-    };
-
-    const {headers} = await request({
-      method: 'post',
-      url: `${apiBase}/org/${args.orgId}/integrations/${args.integrationId}/import`,
-      headers: {
-        authorization: `token ${apiKey}`,
-      },
-      json: true,
-      resolveWithFullResponse: true,
-      body: { target },
-    });
-
-    console.log(chalk.green(`Importing from ${target.owner}/${target.name}:${target.branch} (${headers.location})`));
-  }));
-
-  process.exit(0);
+  const results = await githubImport.importRepos(repos, apiBase, apiKey, args);
+  results.map(({ target, location }) => {
+    console.log(chalk.green(`Importing from ${target.owner}/${target.name}:${target.branch} (${location})`));
+  });
 }
 
-importRepos()
-.catch(err => {
-  console.error(err.stack);
-  process.exit(1);
-})
+init()
+  .catch(err => {
+    console.log(chalk.red(err));
+    process.exit(1);
+  });
