@@ -16,6 +16,7 @@ const help = `
 Usage: snyk-github-import --orgId=<orgId> --integrationId=<integrationId> --githubToken=<githubToken>
 
 Optional arguments:
+  --githubOrg (a specific org to import from)
   --githubUrl (e.g. "${defaults.githubUrl}")
   --days (e.g. ${defaults.days})
   --since (ISO 8601 format date)
@@ -58,7 +59,7 @@ async function init() {
 
   console.log(chalk.grey(`Importing repos modified since ${since.format()}`));
 
-  const repos = await githubImport.getRepos(githubUrl, args.githubToken, since);
+  const repos = await githubImport.getRepos(githubUrl, args.githubToken, since, args.githubOrg);
 
   if (!repos) {
     console.log(chalk.green('No repos to import'));
