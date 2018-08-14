@@ -2,6 +2,10 @@
   "name": "@snyk/github-import",
   "description": "",
   "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/snyk/snyk-github-import.git"
+  },
   "scripts": {
     "test": "npm run lint",
     "lint": "eslint lib/*.js cli/*.js"
