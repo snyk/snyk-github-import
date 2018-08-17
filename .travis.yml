@@ -1,0 +1,13 @@
+sudo: false
+dist: trusty
+language: node_js
+notifications:
+  email: false
+  slack: false
+node_js:
+  - "8"
+after_success:
+  npx semantic-release
+branches:
+  only:
+   - master
