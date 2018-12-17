@@ -1,7 +1,7 @@
 {
   "name": "@snyk/github-import",
   "description": "",
-  "main": "index.js",
+  "main": "lib/index.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/snyk/snyk-github-import.git"
@@ -19,7 +19,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@octokit/rest": "^15.9.5",
+    "@octokit/rest": "^15.18.1",
     "chalk": "^2.4.1",
     "minimist": "^1.2.0",
     "moment": "^2.22.2",
