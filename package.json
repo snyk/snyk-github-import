@@ -28,7 +28,7 @@
     "request": "^2.87.0",
     "request-promise-native": "^1.0.7",
     "uuid-validate": "^0.0.3",
-    "snyk": "^1.189.0"
+    "snyk": "^1.251.1"
   },
   "devDependencies": {
     "eslint": "^5.16.0"
