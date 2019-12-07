@@ -8,9 +8,7 @@
   },
   "scripts": {
     "test": "npm run lint",
-    "lint": "eslint lib/*.js cli/*.js",
-    "snyk-protect": "snyk protect",
-    "prepare": "npm run snyk-protect"
+    "lint": "eslint lib/*.js cli/*.js"
   },
   "bin": {
     "snyk-github-import": "./cli/index.js"
@@ -21,17 +19,15 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@octokit/rest": "^16.25.6",
+    "@octokit/rest": "^16.35.0",
     "chalk": "^2.4.2",
     "minimist": "^1.2.0",
     "moment": "^2.24.0",
     "request": "^2.87.0",
-    "request-promise-native": "^1.0.7",
-    "uuid-validate": "^0.0.3",
-    "snyk": "^1.189.0"
+    "request-promise-native": "^1.0.8",
+    "uuid-validate": "^0.0.3"
   },
   "devDependencies": {
     "eslint": "^5.16.0"
-  },
-  "snyk": true
+  }
 }
