@@ -1,5 +1,7 @@
 # Github Import
 
+# ⚠️ Please use the [new import mechanism instead](https://github.com/snyk-tech-services/snyk-api-import)
+
 [![Known Vulnerabilities](https://snyk.io/test/github/snyk/snyk-github-import/badge.svg)](https://snyk.io/test/github/snyk/snyk-github-import)
 
 Imports projects from Github repos since a given date.
